@@ -31,7 +31,13 @@ def build_title(
         title = assemble(remaining_descriptors)
 
     if len(title) > max_len:
-        title = title[:max_len].rstrip()
+        clipped = title[:max_len].rstrip()
+        # Don't cut mid-word — back up to the last whole-word boundary. If
+        # there's no space at all (one giant token), fall back to the hard
+        # char clip rather than returning an empty string.
+        if " " in clipped and len(clipped) < len(title):
+            clipped = clipped.rsplit(" ", 1)[0]
+        title = clipped
 
     return title
 

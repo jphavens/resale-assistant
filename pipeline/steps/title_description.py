@@ -16,8 +16,11 @@ SYSTEM_PROMPT = (
     "You are writing an eBay listing title and description for a resale item from "
     "already-identified data.\n\n"
     f"{SELLER_CONTEXT_PROMPT_NOTE}\n\n"
-    "Title components: brand, item_type, up to 3 key_descriptors (style/notable "
-    "features — real resale vocabulary, only if genuinely supported), size, color. Do "
+    "Title components (each must be SHORT — 1-3 words, title-appropriate, not a "
+    "description): brand, item_type, up to 3 key_descriptors (style/notable features — "
+    "real resale vocabulary, only if genuinely supported), size, color. color especially "
+    "must be a short color name or two (e.g. 'Black/Olive' or 'Multicolor'), never a full "
+    "sentence describing the pattern — save pattern/print detail for the description. Do "
     "not include marketing language, ALL CAPS, or phrases like 'L@@K' anywhere.\n\n"
     "Description: fixed sections in this order — what it is; condition & flaws (plain "
     "language, from the flaw data and seller_context); a measurements table using the "
@@ -39,6 +42,7 @@ TOOL_SCHEMA = {
         "depop_hashtags": {"type": "array", "items": {"type": "string"}},
     },
     "required": ["brand", "item_type", "key_descriptors", "size", "color", "description", "depop_hashtags"],
+    "additionalProperties": False,
 }
 
 

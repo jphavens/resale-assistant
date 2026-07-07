@@ -107,6 +107,7 @@ class AspectResult(BaseModel):
     name: str
     field: Field[str]
     required: bool
+    aspect_mode: Optional[str] = None  # SELECTION_ONLY | FREE_TEXT, from the Taxonomy response
     checked: bool = False  # her transcription checkbox state (M2), defaults unchecked
 
 

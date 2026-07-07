@@ -54,6 +54,7 @@ class AnthropicStructuredClient:
                 "name": tool_name,
                 "description": f"Return the {tool_name} result.",
                 "input_schema": tool_schema,
+                "strict": True,
             }
         ]
         if extra_tools:

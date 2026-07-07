@@ -38,10 +38,12 @@ MEASUREMENTS_TOOL_SCHEMA = {
                     "confidence": {"type": "string", "enum": ["high", "medium", "low"]},
                 },
                 "required": ["name", "value", "unit", "confidence"],
+                "additionalProperties": False,
             },
         }
     },
     "required": ["readings"],
+    "additionalProperties": False,
 }
 
 WEIGHT_SYSTEM_PROMPT = (
@@ -62,10 +64,12 @@ WEIGHT_TOOL_SCHEMA = {
                     "confidence": {"type": "string", "enum": ["high", "medium", "low"]},
                 },
                 "required": ["value", "unit", "confidence"],
+                "additionalProperties": False,
             },
         }
     },
     "required": ["readings"],
+    "additionalProperties": False,
 }
 
 

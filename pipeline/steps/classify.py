@@ -35,10 +35,12 @@ TOOL_SCHEMA = {
                     }
                 },
                 "required": ["photo_class"],
+                "additionalProperties": False,
             },
         }
     },
     "required": ["classifications"],
+    "additionalProperties": False,
 }
 
 

@@ -94,13 +94,16 @@ _FILL_SCHEMA = {
                 "type": "object",
                 "properties": {
                     "value": {"type": ["string", "null"]},
-                    "confidence": {"type": ["string", "null"], "enum": ["high", "medium", "low", None]},
+                    # Ignored downstream when value is null.
+                    "confidence": {"type": "string", "enum": ["high", "medium", "low"]},
                 },
                 "required": ["value", "confidence"],
+                "additionalProperties": False,
             },
         }
     },
     "required": ["fills"],
+    "additionalProperties": False,
 }
 
 
@@ -161,6 +164,7 @@ def get_category_and_aspects(
                 name=name,
                 field=final,
                 required=aspect["aspectConstraint"].get("aspectRequired", False),
+                aspect_mode=aspect["aspectConstraint"].get("aspectMode"),
             )
         )
 

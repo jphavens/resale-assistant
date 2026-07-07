@@ -35,9 +35,21 @@ def run_pipeline(
     run_id: str | None = None,
 ) -> PipelineOutput:
     run_id = run_id or str(uuid.uuid4())
+    now = datetime.now(timezone.utc).isoformat()
+    conn.execute(
+        """
+        INSERT INTO items (item_id, seller_context, status, created_at, updated_at)
+        VALUES (?, ?, 'processing', ?, ?)
+        ON CONFLICT(item_id) DO UPDATE SET
+            seller_context = excluded.seller_context,
+            status = 'processing',
+            updated_at = excluded.updated_at
+        """,
+        (item_id, seller_context, now, now),
+    )
     conn.execute(
         "INSERT INTO runs (run_id, item_id, model_id, with_seller_context, started_at) VALUES (?, ?, ?, ?, ?)",
-        (run_id, item_id, anthropic_client.model, 1 if seller_context else 0, datetime.now(timezone.utc).isoformat()),
+        (run_id, item_id, anthropic_client.model, 1 if seller_context else 0, now),
     )
     conn.commit()
 
@@ -102,9 +114,14 @@ def run_pipeline(
         price_guidance=price_guidance,
     )
 
+    finished_at = datetime.now(timezone.utc).isoformat()
     conn.execute(
         "UPDATE runs SET output_json = ?, finished_at = ? WHERE run_id = ?",
-        (output.model_dump_json(), datetime.now(timezone.utc).isoformat(), run_id),
+        (output.model_dump_json(), finished_at, run_id),
+    )
+    conn.execute(
+        "UPDATE items SET status = 'ready', updated_at = ? WHERE item_id = ?",
+        (finished_at, item_id),
     )
     conn.commit()
 

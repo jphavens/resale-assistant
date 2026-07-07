@@ -30,6 +30,7 @@ SYSTEM_PROMPT = (
 REPORT_TOOL = {
     "name": "report_price_guidance",
     "description": "Report the final price guidance after researching comps.",
+    "strict": True,
     "input_schema": {
         "type": "object",
         "properties": {
@@ -46,10 +47,12 @@ REPORT_TOOL = {
                         "price": {"type": ["number", "null"]},
                     },
                     "required": ["title", "url", "price"],
+                    "additionalProperties": False,
                 },
             },
         },
         "required": ["low", "high", "reasoning", "comps"],
+        "additionalProperties": False,
     },
 }
 
