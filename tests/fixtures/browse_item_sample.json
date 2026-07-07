@@ -1,0 +1,21 @@
+{
+  "itemId": "v1|123456789012|0",
+  "title": "Levi's 501 Original Fit Men's Jeans Size 34x32 Blue Denim",
+  "categoryId": "11483",
+  "categoryPath": "Clothing, Shoes & Accessories|Men|Men's Clothing|Jeans",
+  "brand": "Levi's",
+  "size": "34x32",
+  "color": "Blue",
+  "material": "100% Cotton",
+  "condition": "Pre-owned",
+  "itemEndDate": "2027-01-01T00:00:00.000Z",
+  "localizedAspects": [
+    {"name": "Brand", "value": "Levi's", "type": "STRING"},
+    {"name": "Size", "value": "34x32", "type": "STRING"},
+    {"name": "Size Type", "value": "Regular", "type": "STRING"},
+    {"name": "Department", "value": "Men", "type": "STRING"},
+    {"name": "Color", "value": "Blue", "type": "STRING"},
+    {"name": "Style", "value": "501", "type": "STRING"},
+    {"name": "Inseam", "value": "32 in", "type": "STRING"}
+  ]
+}
