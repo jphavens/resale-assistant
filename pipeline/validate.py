@@ -18,6 +18,8 @@ import json
 import sys
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 from db.connection import connect
 from pipeline.pipeline import build_default_clients, run_pipeline
 from pipeline.scorer import FieldScore, accuracy, score_fields, summarize
@@ -95,12 +97,18 @@ def main(argv: list[str]) -> int:
         print(f"Not a directory: {testdata_dir}", file=sys.stderr)
         return 2
 
+    item_dirs = find_validate_items(testdata_dir)
+    if not item_dirs:
+        print(f"No items with expected.json found under {testdata_dir} — nothing to validate.")
+        return 0
+
+    load_dotenv()
     conn = connect()
     anthropic_client, taxonomy_client = build_default_clients(conn)
 
     gate_results: list[FieldScore] = []
 
-    for item_dir in find_validate_items(testdata_dir):
+    for item_dir in item_dirs:
         item_id = item_dir.name
         expected = json.loads((item_dir / "expected.json").read_text())
         expected_fields = _build_expected_fields(expected)
