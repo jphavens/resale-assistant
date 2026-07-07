@@ -130,6 +130,39 @@ match an allowed value or be left blank; free-text aspects may use model
 output). Unfillable aspects render as empty fields flagged "couldn't determine
 — check item."
 
+> **Addendum (confirmed against live Taxonomy responses):** most descriptive
+> aspects (Color, Style, Material, Pattern, ...) are `FREE_TEXT` with a large
+> *suggested*-value list, not `SELECTION_ONLY` — only a handful of aspects per
+> category (Size Type, Department, Occasion, Season, Vintage, Country of
+> Origin, ...) are actually closed enums. `FREE_TEXT` is therefore the
+> higher-risk case: eBay accepts anything, so a wrong Material value sails
+> through with no server-side check. The fill logic (Step 4) must carry each
+> aspect's `aspectMode` and `aspectRequired` through from the Taxonomy
+> response and apply:
+> 1. `SELECTION_ONLY` — model value must case-insensitively match an
+>    `aspectValues` entry, or the field stays blank (as originally specified).
+> 2. `FREE_TEXT` — fill only from what's actually readable in the photos or
+>    seller_context, at medium+ confidence. Never emit a plausible-but-
+>    unverified value just because the field accepts free text; a low-
+>    confidence or inferred-only read leaves the field blank and flagged
+>    "couldn't determine — check item," exactly like an unreadable
+>    `SELECTION_ONLY` field. This generalizes the fabric-content no-guess
+>    rule to all free-text aspects, not just Material.
+> 3. Where a `FREE_TEXT` aspect has a suggested-value list, a confident read
+>    should snap to the closest suggested value rather than emit a novel
+>    string, to land in eBay's own vocabulary (search relevance, and
+>    consistency with size-standardization below) — but only when confident;
+>    never force a match that changes the meaning of what was read.
+> 4. `Size` and `Size Type` feed eBay's size-standardization enforcement
+>    (blocking/hiding non-standard sizes, rolling out now) — these two
+>    aspects are load-bearing for whether the listing is visible at all, not
+>    just "nice to have," and should be held to the same no-guess discipline
+>    as brand.
+>
+> The M0 four-bucket scorer already surfaces regressions here: an
+> over-filled `FREE_TEXT` guess that's wrong shows up as a contradiction
+> against ground truth, not a silent pass.
+
 **Step 5 — Title + description.**
 - Title: ≤80 chars, front-load Brand → Item Type → Key Descriptors → Size →
   Color. No keyword stuffing, no ALL CAPS, no "L@@K". Style descriptors only if
